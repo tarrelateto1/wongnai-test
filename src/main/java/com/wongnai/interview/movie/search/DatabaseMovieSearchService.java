@@ -21,7 +21,6 @@ public class DatabaseMovieSearchService implements MovieSearchService {
 		// MovieDataSynchronizer.forceSync() to load all movie data, using MovieDataService, into MovieRepository.
 		// Do not change @Component annotation on this class
 
-
 		return movieRepository.findByNameContains(queryText);
 	}
 }

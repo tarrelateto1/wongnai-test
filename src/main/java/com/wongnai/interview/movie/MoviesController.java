@@ -14,6 +14,7 @@ import com.oracle.tools.packager.Log;
 import com.wongnai.interview.movie.external.MovieData;
 import com.wongnai.interview.movie.external.MovieDataService;
 import com.wongnai.interview.movie.external.MoviesResponse;
+import com.wongnai.interview.movie.search.DatabaseMovieSearchService;
 import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.regex.qual.Regex;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,13 +73,14 @@ public class MoviesController {
 	@Autowired
 	private MovieDataService movieDataService;
 
-
 	@Autowired
 	private MovieRepository movieRepository;
 
+	@Autowired
+	private DatabaseMovieSearchService searchService;
 
 	@RequestMapping(value = "/test",method = RequestMethod.GET)
-	public List<Movie> test()  {
+	public Object test()  {
 //		ข้อ 1
 //		String response = restTemplate.getForObject(MOVIE_DATA_URL,String.class);
 //try {
@@ -97,7 +99,13 @@ public class MoviesController {
 //			}
 //		}
 //		return movieList;
+//for(MovieData movieData : movieDataService.fetchAll()){
+//	movieRepository.save(new Movie(movieData.getTitle(),movieData.getCast()));
+//}
+//movieRepository.save(new Movie("tar",null));
 
-return null;
+		List<Movie> result = searchService.search("glorious");
+
+		return result;
 	}
 }
