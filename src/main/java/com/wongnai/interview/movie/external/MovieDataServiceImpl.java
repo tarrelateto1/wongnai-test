@@ -1,14 +1,11 @@
 package com.wongnai.interview.movie.external;
 
-import com.sun.javafx.tools.packager.Log;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestOperations;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.Arrays;
 
 @Component
 public class MovieDataServiceImpl implements MovieDataService {
