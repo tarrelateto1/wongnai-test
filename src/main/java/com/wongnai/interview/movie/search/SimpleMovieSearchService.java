@@ -27,7 +27,8 @@ public class SimpleMovieSearchService implements MovieSearchService {
 		for(MovieData movieData : movieDataService.fetchAll()){
 			if(movieData.getTitle().toLowerCase().matches(".*" + queryText.toLowerCase()+" .*")
 					&& queryText.length() != movieData.getTitle().length()){
-				Movie movie = new Movie(movieData.getTitle(),movieData.getCast());
+				Movie movie = new Movie(movieData.getTitle());
+				movie.setActors(movieData.getCast());
 				movieList.add(movie);
 			}
 		}

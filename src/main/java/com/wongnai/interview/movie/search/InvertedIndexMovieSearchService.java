@@ -1,6 +1,9 @@
 package com.wongnai.interview.movie.search;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
@@ -15,7 +18,8 @@ import com.wongnai.interview.movie.MovieSearchService;
 public class InvertedIndexMovieSearchService implements MovieSearchService {
 	@Autowired
 	private MovieRepository movieRepository;
-
+	@Autowired
+	private InvertedIndexRepository invertedIndexRepository;
 	@Override
 	public List<Movie> search(String queryText) {
 		//TODO: Step 4 => Please implement in-memory inverted index to search movie by keyword.
@@ -34,7 +38,20 @@ public class InvertedIndexMovieSearchService implements MovieSearchService {
 		// from inverted index for Star and for War so that you get movie ids 1,5,8 for Star and 2,5 for War. The result that
 		// you have to return can be union or intersection of those 2 sets of ids.
 		// By the way, in this assignment, you must use intersection so that it left for just movie id 5.
+		String[] words = queryText.split(" ");
+		if(words.length==0) return new ArrayList<Movie>();
+		Set<Long> index = new HashSet<>();
+		try{
+			index.addAll(invertedIndexRepository.findByWord(words[0].toUpperCase()).get(0).getIndex());
+			for (int i = 1; i < words.length; i++){
+				index.retainAll(invertedIndexRepository.findByWord(words[i].toUpperCase()).get(0).getIndex());
+			}
 
-		return null;
+			if(index.isEmpty()) return new ArrayList<Movie>();
+			return movieRepository.findByIndex(index);
+
+		}catch (IndexOutOfBoundsException e){
+			return new ArrayList<Movie>();
+		}
 	}
 }

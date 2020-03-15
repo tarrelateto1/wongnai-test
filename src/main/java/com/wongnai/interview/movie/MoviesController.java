@@ -2,10 +2,7 @@ package com.wongnai.interview.movie;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
@@ -15,6 +12,7 @@ import com.wongnai.interview.movie.external.MovieData;
 import com.wongnai.interview.movie.external.MovieDataService;
 import com.wongnai.interview.movie.external.MoviesResponse;
 import com.wongnai.interview.movie.search.DatabaseMovieSearchService;
+import com.wongnai.interview.movie.search.InvertedIndexRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.regex.qual.Regex;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +77,9 @@ public class MoviesController {
 	@Autowired
 	private DatabaseMovieSearchService searchService;
 
+
+	@Autowired
+	private InvertedIndexRepository invertedIndexRepository;
 	@RequestMapping(value = "/test",method = RequestMethod.GET)
 	public Object test()  {
 //		ข้อ 1
@@ -104,8 +105,35 @@ public class MoviesController {
 //}
 //movieRepository.save(new Movie("tar",null));
 
-		List<Movie> result = searchService.search("glorious");
+//		List<Movie> result = searchService.search("glorious");
+		String queryText = "Glorio x";
+		// ข้อสี่
+		String[] words = queryText.split(" ");
+		//Empty Query
+		if(words.length==0) return new ArrayList<Movie>();
 
-		return result;
+
+		Set<Long> index = new HashSet<>();
+
+//		return words;
+
+		try{
+			//System.out.println(words[0].toUpperCase());
+			index.addAll(invertedIndexRepository.findByWord(words[0].toUpperCase()).get(0).getIndex());
+			//System.out.println(index);
+			for (int i = 1; i < words.length; i++){
+				index.retainAll(invertedIndexRepository.findByWord(words[i].toUpperCase()).get(0).getIndex());
+				//System.out.println(index);
+			}
+
+			if(index.isEmpty()) return new ArrayList<Movie>();
+			return movieRepository.findByIndex(index);
+
+		}catch (IndexOutOfBoundsException e){
+			// one of the keyword is not found in the inverted index, therefore there is no match
+			return new ArrayList<Movie>();
+		}
+//		return null;
+//		return result;
 	}
 }

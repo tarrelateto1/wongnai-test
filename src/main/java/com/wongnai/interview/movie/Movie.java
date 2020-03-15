@@ -26,10 +26,6 @@ public class Movie {
 	 */
 	protected Movie( ) {
 	}
-	public Movie( String name , List<String> actors) {
-		this.name = name;
-		this.actors = actors;
-	}
 
 	public Movie(String name) {
 		this.name = name;
