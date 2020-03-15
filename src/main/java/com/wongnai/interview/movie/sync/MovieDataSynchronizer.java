@@ -3,7 +3,6 @@ package com.wongnai.interview.movie.sync;
 import javax.transaction.Transactional;
 
 import com.wongnai.interview.movie.Movie;
-import com.wongnai.interview.movie.external.MovieData;
 import com.wongnai.interview.movie.external.MoviesResponse;
 import com.wongnai.interview.movie.search.InvertedIndex;
 import com.wongnai.interview.movie.search.InvertedIndexRepository;
